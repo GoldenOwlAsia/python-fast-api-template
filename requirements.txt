@@ -1,0 +1,12 @@
+alembic
+fastapi
+pydantic
+SQLAlchemy
+uvicorn[standard]
+psycopg2
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
+httpx
+pytest
+pytest-mock
