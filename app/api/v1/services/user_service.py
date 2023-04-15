@@ -28,7 +28,6 @@ def create_user(username: str, password: str) -> User:
             session.add(user)
             session.commit()
         except Exception as ex:
-            print("sasdfasdfsa")
             print(ex)
             return None
 
