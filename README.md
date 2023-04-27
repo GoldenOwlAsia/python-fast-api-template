@@ -44,3 +44,7 @@ password: 1234
 ## Testing
 
 - Run test by `pytest`
+
+## Database diagram
+
+![Database diagram](database_diagram.png)
