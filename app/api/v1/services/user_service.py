@@ -1,8 +1,10 @@
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
+from sqlalchemy.orm.exc import NoResultFound
 from ..models import User
 from dotenv import dotenv_values
+from fastapi import HTTPException, status
 import os
 
 config = dotenv_values(os.getcwd() + "/.env")
@@ -10,17 +12,15 @@ POSTGRES_URL = f"postgresql://{config.get('DB_DEV_USER')}:{config.get('DB_DEV_PA
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 def get_password_hash(password: str):
     return pwd_context.hash(password)
 
 def create_user(username: str, password: str) -> User:
     password_hash = get_password_hash(password)
-    postgres_url = POSTGRES_URL
-    if not postgres_url:
+    if not POSTGRES_URL:
         return None
 
-    engine = create_engine(postgres_url)
+    engine = create_engine(POSTGRES_URL)
 
     user = User(username=username, password=password_hash)
 
@@ -30,21 +30,27 @@ def create_user(username: str, password: str) -> User:
             session.commit()
         except Exception as ex:
             print(ex)
-            return None
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="create user failed",
+            )
 
     return user
 
 def get_user(username: str) -> User:
-    postgres_url = POSTGRES_URL
-    if not postgres_url:
+    if not POSTGRES_URL:
         return None
 
-    engine = create_engine(postgres_url)
+    engine = create_engine(POSTGRES_URL)
     user = None
     with Session(engine) as session:
         try:
             user = session.query(User).where(User.username == username).one()
-        except:
-            return None
+        except NoResultFound as ex:
+            print(ex)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="user not found",
+            )
 
     return user

@@ -1,6 +1,5 @@
 # build a schema using pydantic
 from pydantic import BaseModel
-from datetime import datetime
 
 class User(BaseModel):
     username: str

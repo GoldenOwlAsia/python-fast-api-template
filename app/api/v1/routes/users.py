@@ -8,7 +8,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter()
 
-@router.post("/login")
+@router.post("/login", status_code=status.HTTP_200_OK)
 async def login(user: User):
     username = user.username
     password = user.password
@@ -18,7 +18,7 @@ async def login(user: User):
     access_token = auth_service.create_jwt_token(user_id=username)
     return {"access_token": access_token, "token_type": "Bearer"}
 
-@router.post("/register")
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(user: User):
     username = user.username
     password = user.password
@@ -28,7 +28,7 @@ async def register_user(user: User):
 
     return {"message": "Create user successfully"}
 
-@router.post("/logout")
+@router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout(token: str = Depends(oauth2_scheme)):
-    user_id = auth_service.verify_jwt_token(token)
+    auth_service.verify_jwt_token(token)
     return {"message": "Logged out successfully"}

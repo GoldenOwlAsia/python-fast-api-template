@@ -4,7 +4,7 @@ def test_register_user(client, mocker):
     mocker.patch("app.api.v1.services.user_service.create_user", return_value=True)
     response = client.post("/register",json=data)
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json()["message"] == "Create user successfully"
 
 def test_register_failed(client, mocker):
