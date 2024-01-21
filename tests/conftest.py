@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from dotenv import dotenv_values
 
 import sys
 import os
@@ -15,13 +16,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.api.v1.routes import users
 from app.api.v1.models import Base
 
+config = dotenv_values(os.getcwd() + "/.env")
+SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://{config.get('DB_DEV_USER')}:{config.get('DB_DEV_PASSWORD')}@{config.get('DB_DEV_HOST')}:{config.get('DB_DEV_PORT')}/{config.get('DB_DEV_NAME')}"
+
 def start_application():
     app = FastAPI()
     app.include_router(users.router)
     return app
 
-
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:@localhost/fast_api_template_test"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 # Use connect_args parameter only with sqlite
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)

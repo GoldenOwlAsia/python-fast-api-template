@@ -6,6 +6,7 @@ from dotenv import dotenv_values
 import os
 
 config = dotenv_values(os.getcwd() + "/.env")
+POSTGRES_URL = f"postgresql://{config.get('DB_DEV_USER')}:{config.get('DB_DEV_PASSWORD')}@{config.get('DB_DEV_HOST')}:{config.get('DB_DEV_PORT')}/{config.get('DB_DEV_NAME')}"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -15,7 +16,7 @@ def get_password_hash(password: str):
 
 def create_user(username: str, password: str) -> User:
     password_hash = get_password_hash(password)
-    postgres_url = config.get('POSTGRES_URL')
+    postgres_url = POSTGRES_URL
     if not postgres_url:
         return None
 
@@ -34,7 +35,7 @@ def create_user(username: str, password: str) -> User:
     return user
 
 def get_user(username: str) -> User:
-    postgres_url = config.get('POSTGRES_URL')
+    postgres_url = POSTGRES_URL
     if not postgres_url:
         return None
 

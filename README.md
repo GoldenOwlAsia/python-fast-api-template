@@ -33,7 +33,7 @@ password: 1234
 ```
 ## API documentation
 
-- Visit `http://127.0.0.1:8000/docs` to watch API documentation
+- Visit `http://127.0.0.1:8000/docs` or `http://127.0.0.1:8000/redoc` to watch API documentation
 
 ## Testing
 
